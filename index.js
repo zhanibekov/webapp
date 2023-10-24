@@ -1,4 +1,5 @@
 import express from 'express';
+import jwt from 'jsonwebtoken';
 
 const app = express();
 app.use(express.json());
@@ -8,8 +9,15 @@ app.get('/', (req, res) => {
 
 app.post('/auth/login', (req, res) => {
     console.log(req.body);
+    const token = jwt.sign({
+            fullName: "Zhunisali Shanabek",
+        },
+        'secret123',
+    );
     res.json({
+        email: req.body.email,
         success: true,
+        token,
     });
 })
 
