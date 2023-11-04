@@ -8,7 +8,7 @@ import { registerValidator } from './validations/Auth.js'
 import UserModels from './models/User.js'
 
 mongoose.
-connect('mongodb+srv://elamanzhanibekov:2006@cluster0.oqzqyvs.mongodb.net/?retryWrites=true&w=majority')
+connect('mongodb+srv://elamanzhanibekov:2006@cluster0.oqzqyvs.mongodb.net/blog?retryWrites=true&w=majority')
     .then(() => console.log('DB is working!'))
     .catch((err) => console.log('DB IS ERROR', err))
 
@@ -17,24 +17,45 @@ app.use(express.json());
 
 
 app.post('/auth/register', registerValidator, async(req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json(errors.array());
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json(errors.array());
+        }
+
+        const password = req.body.password; ///////ВЫТСКИВАЮ ПАРОЛЬ из req.body////
+        const salt = await bcrypt.genSalt(10); //АЛГОРИТМ ШИФРОВАНИЯ ПАРОЛЯ///////
+        const hash = await bcrypt.hash(password, salt) //ЗДЕСЬ ХРАНЯТСЯ ЗАШИФРОВАННЫЕ ПАРОЛИ////
+
+
+        const doc = new UserModels({ ///////////СОЗДАЮ ДОКУМЕНТ ПОЛЬЗВАТЕЛЯ////////////
+            email: req.body.email,
+            fullName: req.body.fullName,
+            avatarUrl: req.body.avatarUrl,
+            passwordHash: hash,
+        });
+        const user = await doc.save(); /// CОХРАНЯЮ ПОЛЬЗВАТЕЛЯ В БАЗЕ ДАННЫХ ///
+
+        const token = jwt.sign({ /// ШИФРУЮ ИНФОРМАЦИЮ ПОЛЬЗВАТЕЛЯ ///
+                _id: user._id,
+            },
+            'secret123', /// ВТОРОЙ ПАРАМЕТР ЩИФРУЮ ТОКЕН С ПОМОЩЬЮ КЛЮЧА ///
+            {
+                expiresIn: '30d', /// ТРЕТИЙ ПАРАМЕТР СРОК ХРАНЕНИЯ ТОКЕНА ///
+            },
+        );
+        const { passwordHash, ...userData } = user._doc /// ПАРОЛЬ НЕ ВИДЕН, УБИРАЮ const PasswordHash будет видно///
+        res.json({ /// ВОЗВРАЩАЮ ИНФОРМАЦИЮ ПОЛЬЗВАТЕЛЯ И ТОКЕН ///
+            ...userData, /// (user._doc) чтобы мне был виден пароль ////
+            token,
+        });
+
+    } catch (err) { ///ЗДЕСЬ Я ЛОВЛЮ ОШИБКУ И ВОЗВРАЩАЮ ЗНАЧЕНИЯ///
+        console.log(err);
+        res.status(500).json({
+            message: 'Не удалось зарегистрироваться'
+        });
     }
-
-    const password = req.body.password; ///////ВЫТСКИВАЮ ПАРОЛЬ из req.body////
-    const salt = await bcrypt.genSalt(10); //АЛГОРИТМ ШИФРОВАНИЯ ПАРОЛЯ///////
-
-
-    const doc = new UserModel({ ///////////СОЗДАЮ ДОКУМЕНТ////////////
-        email: req.body.email,
-        fullName: req.body.fullName,
-        avatarUrl: req.body.avatarUrl,
-        passwordHash: req.body.avatarUrl
-    });
-    res.json({
-        success: true,
-    });
 });
 
 
