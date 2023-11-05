@@ -15,6 +15,44 @@ connect('mongodb+srv://elamanzhanibekov:2006@cluster0.oqzqyvs.mongodb.net/blog?r
 const app = express();
 app.use(express.json());
 
+app.post('/auth/login', async(req, res) => { ///АВТОРИЗАЦИЯ ПОЛЬЗВАТЕЛЯ///
+    try {
+        const user = await UserModels.findOne({ email: req.body.email }) ///ПОИСК ПОЛЬЗАТЕЛЯ///
+        if (!user) {
+            return req.status(404).json({
+                message: 'Пользватель не найден',
+            });
+        }
+
+        const isValidPass = await bcrypt.compare(req.body.password, user._doc.passwordHash); ///ЗДЕСЬ ЕСЛИ ПОЛЬЗВАТЕЛЬ НАШЕЛСЯ В БАЗЕ ДАННЫХ,ТО СРАВНИВАЮ ВВЕДЕННЫЙ ПАРОЛЬ В ТЕЛЕ ЗАПРОСА,И В ДОКУМЕНТЕ ПОЛЬЗВАТЕЛЯ CХОДЯТСЯ ЛИ ОНИ
+        if (!isValidPass) {
+            return res.status(400).json({
+                message: 'Неверный пароль или Логин',
+            });
+        }
+        const token = jwt.sign({ /// ШИФРУЮ ИНФОРМАЦИЮ ПОЛЬЗВАТЕЛЯ ///
+                _id: user._id,
+            },
+            'secret123', /// ВТОРОЙ ПАРАМЕТР ЩИФРУЮ ТОКЕН С ПОМОЩЬЮ КЛЮЧА ///
+            {
+                expiresIn: '30d', /// ТРЕТИЙ ПАРАМЕТР СРОК ХРАНЕНИЯ ТОКЕНА ///
+            },
+        );
+
+        const { passwordHash, ...userData } = user._doc /// ПАРОЛЬ НЕ ВИДЕН, УБИРАЮ const PasswordHash будет видно///
+        res.json({ /// ВОЗВРАЩАЮ ИНФОРМАЦИЮ ПОЛЬЗВАТЕЛЯ И ТОКЕН ///
+            ...userData, /// (user._doc) чтобы мне был виден пароль ////
+            token,
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Не удалось зарегистрироваться'
+        });
+    }
+
+})
 
 app.post('/auth/register', registerValidator, async(req, res) => {
     try {
