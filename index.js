@@ -5,7 +5,10 @@ import { validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 
 import { registerValidator } from './validations/Auth.js'
+
 import UserModels from './models/User.js'
+import checkAuth from './utils/checkAuth.js';
+import User from './models/User.js';
 
 mongoose.
 connect('mongodb+srv://elamanzhanibekov:2006@cluster0.oqzqyvs.mongodb.net/blog?retryWrites=true&w=majority')
@@ -96,6 +99,22 @@ app.post('/auth/register', registerValidator, async(req, res) => {
     }
 });
 
+app.get('/auth/me', checkAuth, async(req, res) => { ///ИНФОРМАЦИЯ О ПОЛЬЗВАТЕЛЕ///
+    try {
+        const user = await UserModels.findById(req.userId); //НАЙТИ ПОЛЬЗВАТЕЛЯ В БАЗЕ ДАННЫХ///
+        if (!user) { /// ЕСЛИ ПОЛЬЗВАТЕЛЬ НЕ НАШЕЛСЯ ПОКАЖИ МНЕ ОШИБКУ ///
+            return res.status(404).json({
+                message: 'Пользватель не найден'
+            });
+        }
+        const { passwordHash, ...userData } = user._doc /// ПАРОЛЬ НЕ ВИДЕН, УБИРАЮ const PasswordHash будет видно///
+        res.json(userData);
+    } catch (err) {
+        res.status(500).json({
+            message: 'Ошибка не доступа'
+        });
+    }
+})
 
 app.listen(4444, (err) => {
     if (err) {
