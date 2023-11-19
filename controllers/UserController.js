@@ -49,7 +49,7 @@ export const login = async(req, res) => { ///АВТОРИЗАЦИЯ ПОЛЬЗВ
     try {
         const user = await UserModels.findOne({ email: req.body.email }) ///ПОИСК ПОЛЬЗАТЕЛЯ///
         if (!user) {
-            return req.status(404).json({
+            return res.status(404).json({
                 message: 'Пользватель не найден',
             });
         }
