@@ -54,13 +54,13 @@ export const remove = async(req, res) => {
             });
         } else {
             return res.status(404).json({
-                message: 'статья не найдена'
+                message: 'Статья не найдена'
             });
         }
     } catch (err) {
         console.log(err);
         res.status(500).json({
-            message: "не удалось удалить статью",
+            message: "Не удалось удалить статью",
         });
     }
 };
