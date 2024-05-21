@@ -35,7 +35,7 @@ export const getOne = async(req, res) => {
             $inc: { viewsCount: 1 },
         }, {
             returnDocument: "after",
-        }).then((doc, err) => {
+        }).populate({ path: 'user' }).exec().then((doc, err) => {
             if (err) {
                 console.log(err);
                 return res.status(500).json({

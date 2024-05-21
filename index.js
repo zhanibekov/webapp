@@ -36,8 +36,8 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     res.json({
         url: `/uploads/${req.file.originalname}`,
-    })
-})
+    });
+});
 
 app.get('/tags', PostController.getLastTags);
 app.get('/posts', PostController.getAll);
