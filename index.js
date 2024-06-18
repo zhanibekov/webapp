@@ -10,11 +10,10 @@ import { checkAuth, handleValidationErrors } from './utils/index.js';
 
 import { UserController, PostController } from './controllers/index.js'
 
-
 mongoose.
-connect(process.env.MONGODB_URI)
-    .then(() => console.log('DB is working!'))
+connect(process.env.MONGODB_URI = "mongodb+srv://elamanzhanibekov:2003@cluster0.oqzqyvs.mongodb.net/blog?retryWrites=true&w=majority")
     .catch((err) => console.log('DB IS ERROR', err))
+
 
 const app = express();
 app.use(express.json());
