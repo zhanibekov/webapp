@@ -51,7 +51,7 @@ app.delete('/posts/:id', PostController.remove);
 app.patch('/posts/:id', checkAuth, handleValidationErrors, postCreateValidation, PostController.update);
 
 
-app.get('/', (req, res) => {
+app.get('/posts', (req, res) => {
     res.send('Hello, World!');
 });
 
