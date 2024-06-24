@@ -50,7 +50,7 @@ app.post('/posts', checkAuth, handleValidationErrors, postCreateValidation, Post
 app.delete('/posts/:id', PostController.remove);
 app.patch('/posts/:id', checkAuth, handleValidationErrors, postCreateValidation, PostController.update);
 
-app.get('/posts', (req, res) => {
+app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
 
