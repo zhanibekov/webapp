@@ -50,6 +50,20 @@ app.post('/posts', checkAuth, handleValidationErrors, postCreateValidation, Post
 app.delete('/posts/:id', PostController.remove);
 app.patch('/posts/:id', checkAuth, handleValidationErrors, postCreateValidation, PostController.update);
 
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
+});
+
+app.get('/file', async(req, res) => {
+    try {
+        const data = await fs.promises.readFile(path.join(__dirname, 'file.txt'), 'utf8');
+        res.send(data);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 app.listen(process.env.PORT || 4444, (err) => {
     if (err) {
