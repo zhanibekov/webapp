@@ -55,7 +55,7 @@ app.get('/posts', (req, res) => {
     res.send('Hello, World!');
 });
 
-app.get('/file', async(req, res) => {
+app.get('/posts', async(req, res) => {
     try {
         const data = await fs.promises.readFile(path.join(__dirname, 'file.txt'), 'utf8');
         res.send(data);
