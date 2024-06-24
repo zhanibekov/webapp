@@ -50,33 +50,16 @@ app.post('/posts', checkAuth, handleValidationErrors, postCreateValidation, Post
 app.delete('/posts/:id', PostController.remove);
 app.patch('/posts/:id', checkAuth, handleValidationErrors, postCreateValidation, PostController.update);
 
-app.get('/posts', async(req, res, next) => {
-    try {
-        // Example code to fetch posts
-        const posts = await getPostsFromDatabase(); // Replace with actual database call
-        res.status(200).json(posts);
-    } catch (error) {
-        next(error); // Passes the error to the error-handling middleware
-    }
+app.get('/', (req, res) => {
+    res.send('Welcome to the homepage!');
 });
 
-// Error-handling middleware
-app.use((err, req, res, next) => {
-    console.error('Error occurred:', err.stack);
-    res.status(500).json({ message: 'Internal Server Error', error: err.message });
+// Example of another route
+app.get('/posts', (req, res) => {
+    res.send('Here are the posts.');
 });
 
 const PORT = process.env.PORT || 4444;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
-
-async function getPostsFromDatabase() {
-    // Simulate database call
-    // Replace this with your actual database query logic
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve([{ id: 1, title: 'First Post' }]);
-        }, 1000);
-    });
-}
