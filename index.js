@@ -12,7 +12,7 @@ import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { UserController, PostController } from './controllers/index.js'
 
 mongoose.
-connect(process.env.MONGODB_URI = "mongodb+srv://elamanzhanibekov:2003@cluster0.oqzqyvs.mongodb.net/blog?retryWrites=true&w=majority")
+connect(process.env.MONGODB_URL = "mongodb+srv://elamanzhanibekov:2003@cluster0.oqzqyvs.mongodb.net/blog?retryWrites=true&w=majority")
     .catch((err) => console.log('DB IS ERROR', err))
 
 
@@ -50,14 +50,7 @@ app.post('/posts', checkAuth, handleValidationErrors, postCreateValidation, Post
 app.delete('/posts/:id', PostController.remove);
 app.patch('/posts/:id', checkAuth, handleValidationErrors, postCreateValidation, PostController.update);
 
-app.get('/', (req, res) => {
-    res.send('Welcome to the homepage!');
-});
 
-// Example of another route
-app.get('/posts', (req, res) => {
-    res.send('Here are the posts.');
-});
 
 const PORT = process.env.PORT || 4444;
 app.listen(PORT, () => {
