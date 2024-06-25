@@ -1,6 +1,21 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import multer from 'multer';
+const app = express();
 import cors from 'cors';
+
+const __filename = fileURLToPath(
+    import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
@@ -17,7 +32,6 @@ const PORT = process.env.PORT || 4444;
 
 mongoose.connect(MONGODB_URL).then(() => console.log('DB, ok!')).catch((err) => console.log('DB, error!', err))
 
-const app = express();
 app.use(express.json());
 
 const storage = multer.diskStorage({
@@ -29,6 +43,11 @@ const storage = multer.diskStorage({
     },
 });
 app.use('/uploads', express.static('uploads'))
+
+
+
+
+
 const upload = multer({ storage })
 app.use(cors());
 
