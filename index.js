@@ -1,7 +1,8 @@
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
-import 'dotenv/config.js';
+
+import { config } from 'dotenv';
 import mongoose from 'mongoose';
 import { registerValidator, loginValidation, postCreateValidation } from './validations.js'
 
@@ -10,7 +11,7 @@ import { checkAuth, handleValidationErrors } from './utils/index.js';
 
 import { UserController, PostController } from './controllers/index.js'
 
-
+config();
 const MONGODB_URL = process.env.MONGODB_URL;
 const PORT = process.env.PORT || 4444;
 
