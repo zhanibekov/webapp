@@ -1,8 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
-import {} from 'dotenv/config'
-
+import 'dotenv/config.js';
 import mongoose from 'mongoose';
 import { registerValidator, loginValidation, postCreateValidation } from './validations.js'
 
@@ -11,9 +10,11 @@ import { checkAuth, handleValidationErrors } from './utils/index.js';
 
 import { UserController, PostController } from './controllers/index.js'
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then((res) => console.log('Connected to DB'))
-    .catch((error) => console.log((error)))
+
+const MONGODB_URL = process.env.MONGODB_URL;
+const PORT = process.env.PORT || 4444;
+
+mongoose.connect(MONGODB_URL).then(() => console.log('DB, ok!')).catch((err) => console.log('DB, error!', err))
 
 const app = express();
 app.use(express.json());
@@ -51,7 +52,10 @@ app.patch('/posts/:id', checkAuth, handleValidationErrors, postCreateValidation,
 
 
 
-const PORT = process.env.PORT || 4444;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.listen(PORT, (err) => {
+    if (err) {
+        return console.log(err)
+    }
+
+    return console.log("OK!")
+})
