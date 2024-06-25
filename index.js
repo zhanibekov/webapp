@@ -1,7 +1,7 @@
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
-
+import {} from 'dotenv/config'
 
 import mongoose from 'mongoose';
 import { registerValidator, loginValidation, postCreateValidation } from './validations.js'
@@ -11,10 +11,9 @@ import { checkAuth, handleValidationErrors } from './utils/index.js';
 
 import { UserController, PostController } from './controllers/index.js'
 
-mongoose.
-connect(process.env.MONGODB_URL = "mongodb+srv://elamanzhanibekov:2003@cluster0.oqzqyvs.mongodb.net/blog?retryWrites=true&w=majority")
-    .catch((err) => console.log('DB IS ERROR', err))
-
+mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then((res) => console.log('Connected to DB'))
+    .catch((error) => console.log((error)))
 
 const app = express();
 app.use(express.json());
