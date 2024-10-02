@@ -80,6 +80,8 @@ export const remove = async(req, res) => {
 
 
 
+
+
 export const create = async(req, res) => {
     try {
         const doc = new PostModel({
@@ -123,3 +125,15 @@ export const update = async(req, res) => {
         });
     }
 }
+
+export const getPopular = async(req, res) => {
+    try {
+        const posts = await PostModel.find().sort({ viewsCount: }).exec(); // Сортировка по количеству просмотров
+        res.json(posts);
+    } catch (error) {
+        console.log(error); // Измените `err` на `error`
+        res.status(500).json({
+            message: 'Не удалось получить популярные статьи',
+        });
+    }
+};
