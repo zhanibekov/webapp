@@ -27,10 +27,8 @@ import { checkAuth, handleValidationErrors } from './utils/index.js';
 import { UserController, PostController } from './controllers/index.js'
 
 config();
-const MONGODB_URL = process.env.MONGODB_URL;
-const PORT = process.env.PORT || 4444;
 
-mongoose.connect(MONGODB_URL).then(() => console.log('DB, ok!')).catch((err) => console.log('DB, error!', err))
+mongoose.connect('mongodb+srv://yelaman:2003@cluster0.oqzqyvs.mongodb.net/').then(() => console.log('DB, ok!')).catch((err) => console.log('DB, error!', err))
 
 app.use(express.json());
 
@@ -72,7 +70,7 @@ app.patch('/posts/:id', checkAuth, handleValidationErrors, postCreateValidation,
 
 
 
-app.listen(PORT, (err) => {
+app.listen(4444, (err) => {
     if (err) {
         return console.log(err)
     }
