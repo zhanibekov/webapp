@@ -128,12 +128,13 @@ export const update = async(req, res) => {
 
 export const getPopular = async(req, res) => {
     try {
-        const posts = await PostModel.find().sort({ viewsCount: }).exec(); // Сортировка по количеству просмотров
+        const posts = await PostModel.find().sort({ viewsCount: -1 }).limit(10).populate({ path: 'user' }).exec();
         res.json(posts);
-    } catch (error) {
-        console.log(error); // Измените `err` на `error`
+    } catch {
+        console.log(err);
         res.status(500).json({
             message: 'Не удалось получить популярные статьи',
-        });
+        })
+
     }
-};
+}
